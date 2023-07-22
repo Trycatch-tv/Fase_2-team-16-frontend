@@ -4,75 +4,45 @@ export const authSlice = createSlice({
 	name: 'auth',
 	initialState: {
 		isLoggedIn: false,
+		access_token: '',
+		expires_in: '',
+		user: '',
 		id: '',
-		accessToken: '',
 		name: '',
-		lastname: '',
-		username: '',
+		isLoading: false,
 		email: '',
-		roles: '',
-		emailReset: '',
-		emailRegister: '',
-		isRegister: false,
-		login_in: false,
-		login_user: '',
-		tokenResetPassword: '',
-		sendEmailResetPassword: false,
-		tokenRegister: '',
-		isValidChangePassword: false,
+		password: '',
 	},
 	reducers: {
-		setUser: (state, action) => {
+		getLogin: (state, action) => {
+			const { email, password } = action.payload;
+			state.email = email;
+			state.password = password;
+		},
+		startLoading: (state) => {
+			state.isLoading = true;
+		},
+		getCredentials: (state, action) => {
+			state.isLoggedIn = true;
+			state.access_token = action.payload.access_token;
+			state.expires_in = action.payload.expires_in;
+		},
+		getUser: (state, action) => {
 			state.email = action.payload.email;
 			state.id = action.payload.id;
-			state.lastname = action.payload.lastname;
 			state.name = action.payload.name;
-			state.roles = action.payload.roles;
-			state.username = action.payload.username;
 		},
-		getEmailRegister: (state, action) => {
-			state.emailRegister = action.payload;
-		},
-		getIsRegsiter: (state, action) => {
-			state.isRegister = action.payload;
-		},
-		setEmailResetPassword: (state, action) => {
-			state.emailReset = action.payload;
-		},
-		sendEmailResetPassword: (state, action) => {
-			state.sendEmailResetPassword = action.payload;
-		},
-		getTokenResetPassword: (state, action) => {
-			state.tokenResetPassword = action.payload;
-		},
-		setIsValidChangePassword: (state, action) => {
-			state.isValidChangePassword = action.payload;
-		},
-		getTokenRegister: (state, action) => {
-			state.tokenRegister = action.payload;
-		},
-		logOutUser: (state, action) => {
-			state.email = action.payload.email;
-			state.id = action.payload.id;
-			state.lastname = action.payload.lastname;
-			state.name = action.payload.name;
-			state.roles = action.payload.roles;
-			state.username = action.payload.username;
+		logOut: (state) => {
+			state.isLoggedIn = false;
+			state.access_token = null;
+			state.email = null;
+			state.id = null;
+			state.name = null;
 		},
 	},
 });
 
-export const {
-	getCredentials,
-	setUser,
-	logOutUser,
-	setEmailResetPassword,
-	getTokenRegister,
-	getTokenResetPassword,
-	sendEmailResetPassword,
-	getIsRegsiter,
-	getEmailRegister,
-	setIsValidChangePassword,
-} = authSlice.actions;
+export const { getLogin, startLoading, getCredentials, getUser, logOut } =
+	authSlice.actions;
 
 export default authSlice.reducer;

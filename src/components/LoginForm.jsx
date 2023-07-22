@@ -1,10 +1,18 @@
+import { useState } from 'react';
 import Link from 'next/link';
-import { LoaderLogin } from './loaders/Loaders';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLogin, getCredentials } from '@/store/slices/auth';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from 'react';
+import { useLoginUserMutation } from '@/store/slices/apis';
+import LoaderLogin from './LoaderLogin';
+import { setToken, setExpiration } from '@/services/accessToken/session';
 import Image from 'next/image';
 import Logo from '../../public/logo.png';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useLoginUser } from '@/custom-hooks/loginAuth';
+// Icons
 import {
 	RiMailLine,
 	RiLockLine,
@@ -12,104 +20,170 @@ import {
 	RiEyeOffLine,
 } from 'react-icons/ri';
 
+const initialState = {
+	email: '',
+	password: '',
+};
+
 const LoginForm = () => {
-	const {
-		handleSubmit,
-		isLoadingLogin,
-		showPassword,
-		setShowPassword,
-		errors,
-		register,
-		onSubmit,
-	} = useLoginUser();
+	const router = useRouter();
+	const dispatch = useDispatch();
+	const [formValue, setFormValue] = useState(initialState);
+	const { email, password } = formValue;
+	const [showPassword, setShowPassword] = useState(false);
+
+	const [
+		loginUser,
+		{
+			data: loginData,
+			isLoading: isLoadingLogin,
+			error: loginError,
+			isError: isErr,
+			isSuccess: isLoginsuccess,
+		},
+	] = useLoginUserMutation();
+	const handleChange = (e) => {
+		setFormValue({ ...formValue, [e.target.name]: e.target.value });
+	};
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (password && email) {
+			await loginUser({ email, password });
+		} else {
+			toast.error('🙁😨 please refill fields', {
+				position: 'top-right',
+				autoClose: 1200,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: 'light',
+			});
+		}
+	};
+
+	useEffect(() => {
+		if (isLoginsuccess) {
+			toast.success('😍 Login Success', {
+				position: 'top-right',
+				autoClose: 800,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: 'light',
+			});
+			dispatch(getLogin({ email, password }));
+			const { token } = loginData.data;
+			console.log(loginData);
+			const isLoggedIn = true;
+			dispatch(
+				getCredentials({
+					token,
+					/* expires_in, */
+					isLoggedIn,
+				})
+			);
+			setToken(token);
+			/* setExpiration(expires_in); */
+			/* router.push('/dashboard/products'); */
+			router.push('/dashboard/home');
+		} else {
+			if (loginError && loginError.data) {
+				toast.error(`🙁😨 ${loginError.data.error}`, {
+					position: 'top-right',
+					autoClose: 1300,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+					theme: 'light',
+				});
+			}
+		}
+	}, [
+		isLoginsuccess,
+		router,
+		loginError,
+		loginData,
+		dispatch,
+		email,
+		password,
+	]);
 
 	return (
 		<>
-			<div className='min-h-auto  flex items-center justify-center p-3 flex-col text-white'>
-				<Image
-					src={Logo}
-					alt='Logo ZurmC'
-					priority='true'
-					width='auto'
-					height={100}
-				/>
-				<h1 className='text-blue-800 mb-8 text-[0.7rem]'>
-					Efficiency at Your Fingertips
-				</h1>
-				<div className='bg-white pt-4 pb-4 p-9 rounded-xl shadow-2xl w-[350px]'>
-					<h1 className='text-4xl text-center uppercase font-bold tracking-[1px] text-black mb-8'>
-						Log <span className='text-primary'>In</span>
+			<div className='min-h-screen flex items-center justify-center p-4 flex-col text-white'>
+				<div className='bg-secondary-100 p-8 rounded-xl shadow-2xl w-auto lg:w-[450px]'>
+					<h1 className='text-3xl text-center uppercase font-bold tracking-[5px] text-black mb-8'>
+						Sing <span className='text-primary'>Up</span>
 					</h1>
 					<form
-						className='mb-6 '
-						onSubmit={handleSubmit(onSubmit)}>
-						<div className='relative mb-7 '>
-							<RiMailLine className='absolute top-1/2 -translate-y-1/2 left-2 text-primary' />
+						className='mb-8'
+						onSubmit={handleSubmit}>
+						<div className='relative mb-4 '>
+							<RiMailLine className='absolute top-1/2 -translate-y-1/2 left-2 text-white' />
 							<input
-								id='email'
-								type='email'
+								onChange={handleChange}
 								name='email'
+								type='email'
 								className='py-3 pl-8 pr-4 bg-input_auth w-full focus:bg-input_auth outline-none rounded-lg'
 								placeholder='example@example.com'
-								{...register('email')}
 							/>
-							<p className='absolute w-full top-1/2 text-sm translate-y-[90%] left-2  text-error mt-2 mb-2 '>
-								{errors.email?.message}
-							</p>
 						</div>
-						<div className='relative  mb-7'>
-							<RiLockLine className='absolute top-1/2 -translate-y-1/2 left-2 text-primary' />
+						<div className='relative mb-8'>
+							<RiLockLine className='absolute top-1/2 -translate-y-1/2 left-2 text-white' />
 							<input
-								autoComplete='true'
+								onChange={handleChange}
 								name='password'
 								type={showPassword ? 'text' : 'password'}
-								className=' py-3 px-8 bg-input_auth w-full outline-none rounded-lg'
+								className='py-3 px-8 bg-input_auth w-full outline-none rounded-lg'
 								placeholder='Password'
-								{...register('password')}
 							/>
 							{showPassword ? (
 								<RiEyeOffLine
 									onClick={() => setShowPassword(!showPassword)}
-									className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-primary'
+									className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
 								/>
 							) : (
 								<RiEyeLine
 									onClick={() => setShowPassword(!showPassword)}
-									className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-primary'
+									className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
 								/>
 							)}
-							<p className='absolute w-full top-1/2 text-sm translate-y-[78%] md:translate-y-[1.5rem] left-2  text-error mt-2 mb-2 '>
-								{errors.password?.message}
-							</p>
 						</div>
 						<div>
 							<button
-								disabled={isLoadingLogin}
 								type='submit'
-								className='bg-primary hover:bg-blue-600 hover:text-white text-black uppercase font-bold text-sm w-full py-3 px-4 rounded-lg mt-4 outline-none  shadow-lg transform active:scale-x-75 transition-transform'>
-								<span className='ml-2'>Login</span>
+								className='bg-primary text-black uppercase font-bold text-sm w-full py-3 px-4 rounded-lg'>
+								Login
 							</button>
 						</div>
 					</form>
-					<div className='flex flex-col items-center gap-2'>
+					<div className='flex flex-col items-center gap-4'>
 						<Link
-							href='/auth/forgotpassword'
-							className='text-sm hover:text-primary text-black transition-colors '>
+							href='/auth/forgot-password'
+							className='hover:text-primary text-black transition-colors '>
 							Forget your password?
 						</Link>
 						<Link
 							href='/auth/register'
-							rel='noopener noreferrer'
-							className=' text-sm hover:text-primary text-black transition-colors '>
+							className='hover:text-primary text-black transition-colors '>
 							Create account
 						</Link>
 					</div>
 				</div>
-				<ToastContainer
-					limit={1}
-					className='text-sm md:text-base'
+				<Image
+					src={Logo}
+					alt='Logo ZurmC'
+					className='mt-8 translate-y-20'
 				/>
-				<div className='mt-5 flex justify-center items-center'>
+
+				<ToastContainer />
+				<div className='-translate-y-24 flex justify-center items-center'>
 					{isLoadingLogin ? <LoaderLogin /> : null}
 				</div>
 			</div>

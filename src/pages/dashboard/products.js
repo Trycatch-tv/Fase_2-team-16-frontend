@@ -1,5 +1,6 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import Head from 'next/head';
+import TableData from '@/components/TableData';
 
 const dashboard = () => {
 	return (
@@ -12,7 +13,7 @@ const dashboard = () => {
 				/>
 				<link
 					rel='icon'
-					href='/login.ico'
+					href='/favicon.ico'
 				/>
 			</Head>
 

@@ -1,26 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getToken, setToken, Login_in } from '@/services/accessToken/session';
+import { getToken, setToken } from '@/services/accessToken/session';
 export const apiSlice = createApi({
 	reducerPath: 'apiInventario',
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'https://api-trycatch-test.fly.dev',
+		baseUrl: 'http://localhost:4000',
 	}),
 	endpoints: (builder) => ({
-		loginUser: builder.mutation({
-			query: (dataLogin) => {
-				return {
-					url: '/auth/login',
-					method: 'POST',
-					body: dataLogin,
-				};
-			},
-			transformResponse: (response) => {
-				const { accessToken, id } = response;
-				setToken(accessToken);
-				Login_in();
-				return response;
-			},
-		}),
+
 		registerUser: builder.mutation({
 			query: (dataRegister) => {
 				return {
@@ -29,56 +15,108 @@ export const apiSlice = createApi({
 					body: dataRegister,
 				};
 			},
+
+			
+		}),
+		
+		loginUser: builder.mutation({
+			query: (dataLogin) => {
+				return {
+					url: '/auth/login',
+					method: 'POST',
+					body: dataLogin,
+				};
+			},
+
+			
+			// transformResponse: (response) => {
+			// 	const { access_token, expires_in } = response;
+			// 	localStorage.setItem('access_token', JSON.stringify(access_token));
+			// 	localStorage.setItem('expires_in', JSON.stringify(expires_in));
+			// 	console.log(access_token, expires_in);
+			// 	return response;
+			// },
+		}),
+
+		// createProduct:builder.mutation({
+        //     query:(newProduct)=>{
+		// 		return{
+        //         url:"/products",
+        //         method:"POST",
+        //         body:newProduct
+		// 		}
+        //     },
+		// }),
+
+		createCategory:builder.mutation({
+            query:(newCategory)=>{
+				return{
+                url:"/categories",
+                method:"POST",
+                body:newCategory
+				}
+            },
 		}),
 		getUser: builder.query({
 			query: () => {
 				return {
-					url: '/api/me',
+					url: '/auth/me',
 					headers: {
-						Authorization: `${getToken()}`,
+						Authorization: `Bearer ${getToken()}`,
 					},
 				};
 			},
+			transformResponse: (response) => {
+				const { email, id, name } = response;
+				localStorage.setItem('email', JSON.stringify(email));
+				localStorage.setItem('id', JSON.stringify(id));
+				localStorage.setItem('name', JSON.stringify(name));
+				return response;
+			},
 		}),
-		resetPassword: builder.mutation({
-			query: (email) => {
+		getRefreshToken: builder.mutation({
+			query: () => {
 				return {
-					url: '/auth/forgot-password',
+					url: '/auth/refresh',
 					method: 'POST',
-					body: {
-						userBody: email,
+					headers: {
+						Authorization: `Bearer ${getToken()}`,
 					},
 				};
 			},
-		}),
-		changePassword: builder.mutation({
-			query: ({ tokenResetPassword, newpass }) => {
-				return {
-					url: `/auth/recovery-password/${tokenResetPassword}`,
-					method: 'POST',
-					body: newpass,
-				};
+			transformResponse: (response) => {
+				if (response.status === 200) {
+					const { access_token, expires_in } = response;
+					setToken(access_token, expires_in);
+				}
+				return response;
 			},
 		}),
-		verifyAccount: builder.mutation({
-			query: (email) => {
+		getProducts: builder.query({
+			query: () => {
 				return {
-					url: '/auth/re-activate/',
-					method: 'POST',
-					body: {
-						userBody: email,
+					url: '/products',
+					headers: {
+						Authorization: `Bearer ${getToken()}`,
 					},
 				};
 			},
+			transformResponse: (response) => {
+				const { data } = response;
+				return data;
+			},
 		}),
+
+		
 	}),
 });
 
 export const {
-	useLoginUserMutation,
 	useRegisterUserMutation,
+	useLoginUserMutation,
 	useGetUserQuery,
-	useResetPasswordMutation,
-	useChangePasswordMutation,
-	useVerifyAccountMutation,
+	useGetRefreshTokenMutation,
+	useGetProductsQuery,
+	useCreateProductMutation,
+	useCreateCategoryMutation
 } = apiSlice;

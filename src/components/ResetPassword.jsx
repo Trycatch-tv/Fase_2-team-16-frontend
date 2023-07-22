@@ -1,9 +1,6 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { LoaderLogin } from './loaders/Loaders';
-import { useEmailRP } from '@/custom-hooks/useRPass';
 import {
 	RiMailLine,
 	RiLockLine,
@@ -13,75 +10,87 @@ import {
 import Logo from '../../public/logo.png';
 
 const ResetPassword = () => {
-	const { register, errors, handleSubmit, onSubmit, isResetLoading } =
-		useEmailRP();
-
+	const [showPassword, setShowPassword] = useState(false);
 	return (
-		<>
-			<div className='min-h-screen flex items-center justify-center p-4 flex-col text-white'>
-				<Image
-					src={Logo}
-					alt='Logo ZurmC'
-					priority={true}
-					width='auto'
-					height={100}
-				/>
-				<h1 className='text-blue-800 mb-8 text-[0.7rem]'>
-					Efficiency at Your Fingertips
+		<div className='min-h-screen flex items-center justify-center p-4 flex-col text-white'>
+			<div className='bg-secondary-100 p-8 rounded-xl shadow-2xl w-auto lg:w-[450px]'>
+				<h1 className='text-3xl text-center uppercase font-bold tracking-[5px] text-black mb-8'>
+					Password<span className='text-primary'> Reset</span>
 				</h1>
-				<div className='bg-white p-8 rounded-xl shadow-2xl w-[350px] '>
-					<h1 className='text-3xl text-center uppercase font-bold tracking-[3px] text-black '>
-						Password
-					</h1>
-					<h2 className='text-3xl text-center uppercase font-bold tracking-[3px] text-primary mb-4'>
-						Reset
-					</h2>
-					<form
-						className='mb-8 mt-5'
-						onSubmit={handleSubmit(onSubmit)}>
-						<div className='relative mb-4'>
-							<RiMailLine className='absolute top-1/2 -translate-y-1/2 left-2 text-primary' />
-							<input
-								type='email'
-								{...register('email')}
-								className='py-3 pl-8 pr-4 bg-input_auth w-full outline-none rounded-lg'
-								placeholder='Email'
-							/>
-							<p className='absolute w-full top-1/2 text-sm translate-y-[80%] md:translate-y-[100%] left-2  text-error mt-2 mb-2 text-center'>
-								{errors.email?.message}
-							</p>
-						</div>
-
-						<div>
-							<button
-								type='submit'
-								className='bg-primary hover:bg-blue-600 hover:text-white text-black uppercase font-bold text-sm w-full py-3 px-4 rounded-lg mt-4 outline-none  shadow-lg transform active:scale-x-75 transition-transform'>
-								Reset my Password
-							</button>
-						</div>
-					</form>
-					<div className='flex flex-col items-center gap-4'>
-						<Link
-							href='/auth/register'
-							className='hover:text-primary text-black transition-colors'>
-							Create account
-						</Link>
-						<span className='flex items-center justify-center gap-2 text-black'>
-							You have account?
-							<Link
-								href='/auth/login'
-								className='text-black font-semibold hover:text-primary transition-colors'>
-								Login
-							</Link>
-						</span>
+				<form className='mb-8'>
+					<div className='relative mb-4'>
+						<RiMailLine className='absolute top-1/2 -translate-y-1/2 left-2 text-white' />
+						<input
+							type='email'
+							className='py-3 pl-8 pr-4 bg-input_auth w-full outline-none rounded-lg'
+							placeholder='Username or email'
+						/>
 					</div>
-				</div>
-				<ToastContainer limit={1} />
-				<div className=' flex justify-center items-center'>
-					{isResetLoading ? <LoaderLogin /> : null}
+					<div className='relative mb-4'>
+						<RiLockLine className='absolute top-1/2 -translate-y-1/2 left-2 text-white' />
+						<input
+							type={showPassword ? 'text' : 'password'}
+							className='py-3 px-8 bg-input_auth w-full outline-none rounded-lg'
+							placeholder='Password'
+						/>
+						{showPassword ? (
+							<RiEyeOffLine
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
+							/>
+						) : (
+							<RiEyeLine
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
+							/>
+						)}
+					</div>
+					<div className='relative mb-8'>
+						<RiLockLine className='absolute top-1/2 -translate-y-1/2 left-2 text-white' />
+						<input
+							type={showPassword ? 'text' : 'password'}
+							className='py-3 px-8 bg-input_auth w-full outline-none rounded-lg'
+							placeholder='Confirm Password'
+						/>
+						{showPassword ? (
+							<RiEyeOffLine
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
+							/>
+						) : (
+							<RiEyeLine
+								onClick={() => setShowPassword(!showPassword)}
+								className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-white'
+							/>
+						)}
+					</div>
+					<div>
+						<button
+							type='submit'
+							className='bg-primary text-black uppercase font-bold text-sm w-full py-3 px-4 rounded-lg'>
+							Reset Password
+						</button>
+					</div>
+				</form>
+				<div className='flex flex-col items-center gap-4'>
+					<Link
+						href=''
+						className='hover:text-primary text-black transition-colors'>
+						Didn&apos;t receive an code?
+					</Link>
+					<Link
+						href='/auth/register'
+						className='hover:text-primary text-black transition-colors'>
+						Create account
+					</Link>
 				</div>
 			</div>
-		</>
+			<Image
+				src={Logo}
+				alt='Logo ZurmC'
+				className='mt-8 translate-y-10'
+			/>
+		</div>
 	);
 };
 
