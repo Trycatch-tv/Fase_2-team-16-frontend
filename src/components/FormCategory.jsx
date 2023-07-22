@@ -1,6 +1,6 @@
 
 import React from 'react'
-import useFormCategory from '@/hooks/useFormCategory'
+import useFormCategory from '@/custom-hooks/useFormCategory'
 import { ToastContainer } from 'react-toastify';
 
 function FormCategory() {

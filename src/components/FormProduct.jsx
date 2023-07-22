@@ -5,7 +5,7 @@ import { MdDescription, MdConfirmationNumber } from 'react-icons/md';
 import Link from 'next/link';
 import Logo from '../../public/logo.png';
 import Image from 'next/image';
-import useFormProduct from '@/hooks/useFormProduct';
+import useFormProduct from '@/custom-hooks/useFormProduct';
 
 
 
