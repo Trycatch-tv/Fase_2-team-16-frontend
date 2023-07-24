@@ -8,7 +8,6 @@ import picture5 from '../../public/ff.jpg'
 import picture6 from '../../public/jr.jpg'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import {cards,item} from './animations/displayer.TSX'
 import {
   RiLinkedinFill,
   RiGithubFill
@@ -125,11 +124,11 @@ export default function Team() {
             <Image className='shrink-0 h-full' src={picture2}
               width={250} />
           </div>
-          <div className='w-1/4 flex-col'>
+          <div className='w-1/4 flex-col ml-2'>
             <p className='text-purple-500'>Ricardo Mejía </p>
             <h4 className='font-medium'>Nacionalidad: <span>Colombia</span></h4>
             <h4 className='font-medium'>Perfil</h4>
-            <p className=''>Soy un desarrollador de software apasionado, tengo conocimientos en React.js, Vue.js, Node.js, Java, C# y ASP.NET.</p>
+            <p className=''>JR Full-Stack Developer,REACT JS, JAVA, C#, VUE JS</p>
             <h4 className='font-medium'>Redes sociales</h4>
             <div className='inline-flex gap-2'>
               <Link href="https://www.linkedin.com/in/ricardo-andres-mejia-cordoba/"><RiLinkedinFill className='text-purple-500 text-2xl' /></Link>
