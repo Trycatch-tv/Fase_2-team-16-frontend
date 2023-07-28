@@ -1,9 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getToken, setToken } from '@/services/accessToken/session';
+
+import { getToken, setToken, Login_in } from '@/services/accessToken/session';
+
 export const apiSlice = createApi({
 	reducerPath: 'apiInventario',
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'http://localhost:4000',
+		baseUrl: 'https://api-inventario.fly.dev',
+
 	}),
 	endpoints: (builder) => ({
 
@@ -18,9 +21,11 @@ export const apiSlice = createApi({
 
 			
 		}),
-		
-		loginUser: builder.mutation({
-			query: (dataLogin) => {
+
+
+		registerUser: builder.mutation({
+			query: (dataRegister) => {
+
 				return {
 					url: '/auth/login',
 					method: 'POST',

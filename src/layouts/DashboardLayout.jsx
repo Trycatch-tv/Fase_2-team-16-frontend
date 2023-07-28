@@ -24,13 +24,13 @@ const DashboardLayout = ({ children }) => {
 				/>
 			</Head>
 
-			<div className='flex overflow-x-hidden'>
-				<div className='bg-secondary-100 h-screen'>
+			<div className='flex overflow-x-hidden min-h-screen min-w-[20rem] '>
+				<div className='bg-blue-800 '>
 					<Sidebar />
 				</div>
-				<div className='w-full'>
+				<div className='w-full '>
 					<Header />
-					<div className='p-4'>{children}</div>
+					<div className='lg:p-4 '>{children}</div>
 				</div>
 			</div>
 		</>

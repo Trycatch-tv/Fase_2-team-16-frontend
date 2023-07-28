@@ -16,8 +16,6 @@ const dashboard = () => {
 					href='/favicon.ico'
 				/>
 			</Head>
-
-			<div className='w-full'></div>
 		</DashboardLayout>
 	);
 };

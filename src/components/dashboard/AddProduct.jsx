@@ -1,95 +1,153 @@
 import React from 'react';
 import Image from 'next/image';
 import notImage from '../../../public/images/no-image.webp';
+import { useAddProduct } from '../../custom-hooks/addProduct';
 
 const AddProduct = () => {
+	const { image, setImage, register, handleSubmit, onSubmit, errors } =
+		useAddProduct();
+
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		if (!file) {
+			setImage(null);
+			return;
+		}
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onloadend = () => {
+			setImage(reader.result);
+		};
+	};
+
+	const Input = ({ name, placeholder, type }) => {
+		return (
+			<>
+				<label className='capitalize'>{name}</label>
+				<input
+					type={type}
+					name={name}
+					id={name}
+					placeholder={placeholder}
+					className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200 lg:p-1'
+					{...register(name)}
+				/>
+			</>
+		);
+	};
+
+	const Select = ({ name, placeholder, option }) => {
+		return (
+			<>
+				<label
+					htmlFor={name}
+					className='capitalize'>
+					{name}
+				</label>
+				<select
+					id={name}
+					{...register(name)}
+					defaultValue={'Default'}
+					className='border border-solid border-gray-400 p-2 lg:p-1 rounded-md bg-gray-200   focus:ring-blue-500 focus:border-blue-500 block w-full  box-border'>
+					<option
+						value='default'
+						disabled={true}>
+						{placeholder}
+					</option>
+					{option.map((item, index) => (
+						<option
+							key={index}
+							value={item}>
+							{item}
+						</option>
+					))}
+				</select>
+			</>
+		);
+	};
+
+	const TextArea = ({ name, placeholder }) => {
+		return (
+			<>
+				<label className='capitalize'>{name}</label>
+				<textarea
+					name={name}
+					id={name}
+					placeholder={placeholder}
+					className='h-32 lg:h-28 border border-solid border-gray-400 p-2 rounded-md bg-gray-200 resize-none'
+					{...register(name)}></textarea>
+			</>
+		);
+	};
+
 	return (
-		<div className='mb-4 flex justify-center items-center flex-col'>
-			<h1 className='font-bold md:text-lg '>Register New Product</h1>
-
+		<div className='mb-1 flex justify-center items-center flex-col'>
 			<hr className=' bg-blue-950  ml-0 mt-4 mb-4' />
-			<div className='w-full border border-solid border-gray-300 shadow-sm rounded-md lg:w-[50rem] '>
-				<h2 className=' text-center p-4 font-extrabold uppercase'>
-					Add Product
+			<div className='w-full border border-solid border-gray-200 shadow-xl rounded-md lg:w-[80%] '>
+				<h2 className=' text-center p-4 lg:mt-2 font-extrabold uppercase lg:text-base'>
+					Add New Product
 				</h2>
-				<form className='flex flex-col p-4 '>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className='flex flex-col p-4 lg:p-2 lg:pl-5 lg:pr-5'>
 					<div className='md:grid gap-4  grid-cols-2'>
-						<div className='flex flex-col gap-2'>
-							<label htmlFor='name'>Name</label>
-							<input
-								type='text'
+						<div className='flex flex-col gap-2 lg:gap-1'>
+							<Input
 								name='name'
-								id='name'
 								placeholder='Product Name'
-								className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200'
+								type='text'
 							/>
-
-							<label htmlFor='price'>Price</label>
-							<input
-								type='number'
+							<Input
 								name='price'
-								id='price'
-								placeholder='Product Price'
-								className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200'
+								placeholder='Price'
+								type='number'
 							/>
-							<label htmlFor='price'>Stock</label>
-							<input
-								type='number'
-								name='price'
-								id='price'
+							<Input
+								name='stock'
 								placeholder='Stock'
-								className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200'
+								type='number'
 							/>
-							<label htmlFor='name'>Provider</label>
-							<select
-								id='Provider'
-								className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200   focus:ring-blue-500 focus:border-blue-500 block w-full  box-border'>
-								<option selected>Select Provider</option>
-								<option value=''>Provider 1</option>
-								<option value=''>Provider 2</option>
-								<option value=''>Provider 3</option>
-								<option value=''>Provider 4</option>
-							</select>
-							<label htmlFor='name'>Category</label>
-							<select
-								id='category'
-								className='border border-solid border-gray-400 p-2 rounded-md bg-gray-200   focus:ring-blue-500 focus:border-blue-500 block w-full  box-border'>
-								<option selected>Select Category</option>
-								<option value=''>category 1</option>
-								<option value=''>Category 2</option>
-								<option value=''>Category 3</option>
-								<option value=''>Category 4</option>
-							</select>
+							<Select
+								name='provider'
+								placeholder='Select Provider'
+								option={['provider 1', 'provider 2', 'provider 3']}
+							/>
+							<Select
+								name='category'
+								placeholder='Select Category'
+								option={['category 1', 'category 2', 'category 3']}
+							/>
 						</div>
-						<div className='flex flex-col gap-2'>
-							<label htmlFor='image'>Image</label>
-							<input
-								type='file'
-								name='image'
-								id='image'
-								placeholder='Product Image'
-								className=' border border-solid border-gray-400 p-1 rounded-md bg-gray-200'
-							/>
-
-							<div className='w-full flex justify-center items-center'>
+						<div className='flex flex-col gap-2 lg:gap-1'>
+							<div className='flex flex-col gap-2 lg:gap-1'>
+								<label htmlFor='image'>Image</label>
+								<input
+									type='file'
+									name='image'
+									id='image'
+									placeholder='Image'
+									{...register('image')}
+									className='border border-solid border-gray-400 p-2 lg:p-0 rounded-md bg-gray-200'
+									onChange={handleImageChange}
+								/>
+							</div>
+							<div className='w-full flex justify-center items-center '>
 								<Image
-									className='w-full h-auto mt-2 md:h-[20rem] lg:w-auto'
-									src={notImage}
+									className='w-auto h-auto mt-2 md:h-[20rem] lg:w-auto lg:h-[17rem]'
+									src={image ? image : notImage}
 									alt='Product Image'
+									width={300}
+									height={300}
 								/>
 							</div>
 						</div>
 					</div>
-					<div className='flex flex-col gap-2 mt-2 md:w-full'>
-						<label htmlFor='description'>Description</label>
-						<textarea
+					<div className='flex flex-col gap-2 lg:gap-1 mt-2 md:w-full'>
+						<TextArea
 							name='description'
-							id='description'
-							placeholder='Product Description'
-							className=' h-32 border border-solid border-gray-400 p-2 rounded-md bg-gray-200 resize-none '
+							placeholder='Description'
 						/>
 					</div>
-
 					<div className='w-full flex justify-center items-center h-auto p-4 '>
 						<input
 							type='submit'
