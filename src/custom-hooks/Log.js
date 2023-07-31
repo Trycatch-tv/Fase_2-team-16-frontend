@@ -4,17 +4,18 @@ import { useEffect, useState } from "react";
 export const useLogs = () => {
   const [logsData, setLogs] = useState([]);
   const {
-    isSuccessLogs,
-    isErrorLogs,
-    isFetchingLogs,
+    isSuccess: isSuccessLogs,
+    isError: isErrorLogs,
+    isLoading: isLoandingLogs,
     data: logsBack,
   } = useGetLogsQuery();
 
+  // isFetchingLogs,
   useEffect(() => {
     if (logsBack) {
       setLogs(logsBack.logs);
     }
   }, [logsBack]);
 
-  return { logsData, logsBack, isSuccessLogs, isErrorLogs, isFetchingLogs };
+  return { logsData, logsBack, isSuccessLogs, isErrorLogs, isLoandingLogs };
 };

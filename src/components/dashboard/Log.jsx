@@ -4,7 +4,10 @@ import PaginationLogs from "../pagination/LogsPagination";
 import { LoaderLogs } from "../loaders/Loaders";
 
 const Log = () => {
-  const { logsData } = useLogs();
+  const { logsData, isSuccessLogs, isErrorLogs, isLoandingLogs } = useLogs();
+  console.log(isSuccessLogs);
+  //   console.log(isErrorLogs);
+  //   console.log(isLoandingLogs);
 
   const dataLogs = logsData.map((log, index) => (
     <div
@@ -74,15 +77,22 @@ const Log = () => {
       <h2 className="text-gray-500 font-bold text-3xl text-center uppercase ">
         Logs
       </h2>
-      {logsData.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 mb-4">
-          {dataLogs}
-        </div>
-      ) : (
+      {!isSuccessLogs ? (
         <div className="flex justify-center flex-col items-center mt-8 gap-4">
           <LoaderLogs /> Cargando logs...
         </div>
-      )}
+      ) : logsData.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 mb-4">
+          {dataLogs}
+        </div>
+      ) : isSuccessLogs ? (
+        <div className="flex justify-center flex-col items-center mt-8 mb-8 gap-4 p-10  w-full  hover:cursor-default">
+          <span className="text-6xl">⚠️</span>
+          <span className="text-yellow-500 font-bold text-md text-center uppercase ">
+            No logs found.
+          </span>
+        </div>
+      ) : null}
       <div>{logsData.length > 0 ? <PaginationLogs /> : ""}</div>
     </>
   );
