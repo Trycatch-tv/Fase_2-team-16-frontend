@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 const index = () => {
 	const router = useRouter();
 	useEffect(() => {
-		//redirect to /login
-		router.push('/home/index');
+		//redirect to /home
+		router.push('/home/Index');
 	}, [router]);
 	return null;
 };
