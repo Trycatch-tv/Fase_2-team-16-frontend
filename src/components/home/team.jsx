@@ -38,7 +38,7 @@ export default function Team(team) {
       nacionality: "Argentina",
       role: "Fullstack Developer",
       image: "/../public/images/teams/ff.jpg",
-      description: "If a dog chews shoes whose shoes does he choose?",
+      description: "Passionate about programming and computing",
       link_linkedin: "https://www.linkedin.com/in/fabrizio-ferroni",
       link_github: "https://github.com/FabrizioFerroni",
     },
