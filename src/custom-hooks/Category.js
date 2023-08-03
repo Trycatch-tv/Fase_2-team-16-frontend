@@ -10,13 +10,16 @@ import {
 	useGetCategoryQuery,
 	useAddCategoryMutation,
 	useDeleteCategoryMutation,
+	useEditCategoryMutation,
 } from '@/store/slices/apis';
 import { useEffect, useState } from 'react';
 
 export const useAddCategory = () => {
 	const [categories, setCategories] = useState([]);
 	const [open, setOpen] = useState(false);
+	const [openEdit, setOpenEdit] = useState(false); // [1
 	const [selectCategory, setSelectCategory] = useState();
+
 	const {
 		data: dataCategories,
 		isLoading: isLoandingCategories,
@@ -45,6 +48,18 @@ export const useAddCategory = () => {
 		},
 	] = useDeleteCategoryMutation();
 
+	const [
+		editCategory,
+		{
+			isSuccess: isSuccessEditCategory,
+			data: dataEditCategory,
+			isError: isEditError,
+			isLoading: isLoandingEditCategory,
+			error: editCategoryError,
+			isUninitialized: isUninitializedEditCategory,
+		},
+	] = useEditCategoryMutation();
+
 	const {
 		register,
 		handleSubmit,
@@ -57,12 +72,33 @@ export const useAddCategory = () => {
 		resolver: yupResolver(addCategorySchema),
 	});
 
+	const {
+		register: registerEdit,
+		handleSubmit: handleSubmitEdit,
+		formState: { errors: errorsEdit },
+	} = useForm({
+		defaultValues: {
+			name: selectCategory?.name,
+			description: selectCategory?.description,
+		},
+		resolver: yupResolver(addCategorySchema),
+	});
+
 	const onSubmit = (data) => {
 		addCategory(data);
 	};
 	const handleDeleteCategory = () => {
 		deleteCategory(selectCategory.id);
 	};
+	const onSubmitEdit = ({ name, description }) => {
+		const data = {
+			id: selectCategory.id,
+			name,
+			description,
+		};
+		editCategory(data);
+	};
+	console.log(errorsEdit);
 
 	useEffect(() => {
 		if (dataCategories) {
@@ -88,6 +124,10 @@ export const useAddCategory = () => {
 			case isDeleteError:
 				errorRequest(deleteCategoryError?.data?.message);
 				break;
+			case isSuccessEditCategory:
+				success(dataEditCategory?.message);
+				setOpenEdit(false);
+				break;
 		}
 	}, [
 		isSuccessCategory,
@@ -100,6 +140,8 @@ export const useAddCategory = () => {
 		errorAddCategory,
 		isDeleteError,
 		deleteCategoryError,
+		isSuccessEditCategory,
+		dataEditCategory,
 	]);
 
 	return {
@@ -117,5 +159,12 @@ export const useAddCategory = () => {
 		setOpen,
 		setSelectCategory,
 		selectCategory,
+		setOpenEdit,
+		openEdit,
+		onSubmitEdit,
+		registerEdit,
+		handleSubmitEdit,
+		errorsEdit,
+		isLoandingEditCategory,
 	};
 };

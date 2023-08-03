@@ -3,37 +3,37 @@
 @tailwind utilities;
 
 body {
-  /* background-color: #eef5f7; */
-  color: black;
-  box-sizing: border-box;
-  min-width: 300px;
+	background-color: #eef5f7;
+	color: black;
+	box-sizing: border-box;
+	min-width: 300px;
 }
 
 /* CLIENT-SPECIFIC STYLES */
 
 ::-webkit-scrollbar {
-  width: 8px;
+	width: 8px;
 }
 
 /* Track */
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+	background: #f1f1f1;
 }
 
 /* Handle */
 
 ::-webkit-scrollbar-thumb {
-  background: #ff7a59;
+	background: #ff7a59;
 }
 
 /* Handle on hover */
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ee6c4d;
+	background: #ee6c4d;
 }
 
 * {
-  outline: none;
-  box-shadow: 0 0 0 0 transparent;
+	outline: none;
+	box-shadow: 0 0 0 0 transparent;
 }
